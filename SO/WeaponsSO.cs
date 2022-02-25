@@ -19,9 +19,10 @@ public class WeaponsSO : ScriptableObject
     public float damage = 20f;
     public float range = 15f;
     public float bulletSpeed = 20f;
+    public float fire_rate = 0.5f;
 
     [Header("Set pistol and fire position")]
-    public Vector3 pistolPos = new Vector3(0, 0, 0);
+    public Vector3 weaponPos = new Vector3(0, 0, 0);
     public Vector3 firePos = new Vector3(0, 0, 0);
 
 }

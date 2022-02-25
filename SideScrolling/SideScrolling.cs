@@ -8,15 +8,18 @@ public class SideScrolling : MonoBehaviour
 {
     //public so we can refer directly to these scripts
     [Header("About Weapons and Effects")]
-    public WeaponsSO weapon; //Allows me to reference with Inventory script and assign the weapon,
-                             //public so it is accessable to other scripts
-    
-    public Transform firePos; //Allows me to get the transform of the gameObject and set it as
-                              //firePos
+    public WeaponsSO weapon; //Allows me to reference with Inventory script and assign the weapon, public so it is accessable to other scripts
+    [SerializeField] AudioClip _audio; // Muzzle Audio
+    [SerializeField] ParticleSystem muzzleFlash; //Particle SYstem
+    [SerializeField] GameObject impactEffect; //Particle system, set as gameobject so I can instantiate
+    [SerializeField] LineRenderer LineRenderer; //copied, but it's to create a "ray"
+    [SerializeField] GameObject bullet; //allows me to instantiate this GameObject
 
     [HideInInspector]
-    public CapsuleCollider2D playerCollider; //this is just for other scripts to reference is,
-                                             //thus hiding from inspector
+    public CapsuleCollider2D playerCollider; //this is just for other scripts to reference is, thus hiding from inspector
+    public Transform firePos; //Allows me to get the transform of the gameObject and set it as firePos                                         
+    Vector3 offSet;
+    float nextFire = 0f;                                         
 
     //To access native components of this(player) gameObject
     Rigidbody2D rb;
@@ -29,16 +32,6 @@ public class SideScrolling : MonoBehaviour
     [Header("Player Settings")]
     [SerializeField] float playerSpeed = 5f;
     [SerializeField] float jumpHeight = 10f;
-    [SerializeField] AudioClip _audio; // Muzzle Audio
-    [SerializeField] ParticleSystem muzzleFlash; //Particle SYstem
-    [SerializeField] GameObject impactEffect; //Particle system, set as gameobject
-                                              //so I can instantiate
-    [SerializeField] LineRenderer LineRenderer; //copied, but it's to create a "ray"
-    [SerializeField] GameObject bullet; //allows me to instantiate this GameObject
-    [SerializeField] Vector3 offSet;
-
-    float fireRate = 0.5f;//working to apply to WeaponsSO
-    float nextFire = 0f;
     
     Vector2 moveInput;
 
@@ -55,6 +48,7 @@ public class SideScrolling : MonoBehaviour
 
     void Update()
     {
+        LineRenderer.transform.position = firePos.transform.position;
         SpriteRenderer spriteRenderer;//To load the sprite of the current weapon we're holding
         //rememeber to transfer to OnEquip1/2
         spriteRenderer = GameObject.Find("Weapon").GetComponentInChildren<SpriteRenderer>();
@@ -76,21 +70,19 @@ public class SideScrolling : MonoBehaviour
         }
     }
 
-    void OnFire(InputValue value) //onLeftButtonMouseClick
+    void OnFire() //onLeftButtonMouseClick
     {
         if (weapon.weaponType == "Fire" && Time.time > nextFire) //Fire mode
-        {
-            
-            nextFire = Time.time + fireRate; //Time.time is a timer that start when a scene is played,
+        {      
+            nextFire = Time.time + weapon.fire_rate; //Time.time is a timer that start when a scene is played,
                                              //so that + the fireRate and set equal to nextFire allow
                                              //us to enable fireRate
             AudioSource.PlayClipAtPoint(_audio, Camera.main.transform.position);
             muzzleFlash.Play();
             Instantiate(bullet, firePos.position, transform.rotation);
-
         } else if (weapon.weaponType == "Ray" && Time.time > nextFire) //ray mode
         {
-            nextFire = Time.time + fireRate; //Working on change so that you hold mouse
+            nextFire = Time.time + weapon.fire_rate; //Working on change so that you hold mouse
             AudioSource.PlayClipAtPoint(_audio, Camera.main.transform.position);
             muzzleFlash.Play();
             StartCoroutine(Shoot());
