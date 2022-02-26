@@ -48,7 +48,6 @@ public class SideScrolling : MonoBehaviour
 
     void Update()
     {
-        LineRenderer.transform.position = firePos.transform.position;
         SpriteRenderer spriteRenderer;//To load the sprite of the current weapon we're holding
         //rememeber to transfer to OnEquip1/2
         spriteRenderer = GameObject.Find("Weapon").GetComponentInChildren<SpriteRenderer>();
@@ -127,6 +126,7 @@ public class SideScrolling : MonoBehaviour
     void OnEquip2()//OnPlayerPress2
     {
         if (inventory.Winventory.Count == 0) { return; }//Same thing here but at index position 1
+        
         if (weapon == inventory.Winventory[1]) { weapon = inventory.blank; }
         else { weapon = inventory.Winventory[1]; }
 
